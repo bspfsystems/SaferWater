@@ -88,8 +88,8 @@ public final class SaferWaterListener implements Listener {
         Block lastWaterBlock = spawnWorld.getBlockAt(spawnLocation);
         Block checkBlock = lastWaterBlock.getRelative(BlockFace.DOWN, 1);
         
-        while (!this.checkBlock(checkBlock)) {
-            if (checkBlock.getType() == Material.WATER) {
+        while (this.checkBlock(checkBlock)) {
+            if (checkBlock.getType() == Material.WATER || (checkBlock.getBlockData() instanceof Waterlogged && ((Waterlogged) checkBlock.getBlockData()).isWaterlogged())) {
                 lastWaterBlock = checkBlock;
             }
             checkBlock = checkBlock.getRelative(BlockFace.DOWN, 1);
@@ -104,6 +104,11 @@ public final class SaferWaterListener implements Listener {
      * Checks the given {@link Block} and the 2 {@link Block}s below to see if
      * the bottom of the body of water has been reached, and thus the light
      * level (from blocks) should be checked.
+     * <p>
+     * If any {@link Material#AIR} is present in the lower 3 {@link Block}s (can
+     * occur with underground caves close to the bottom of the body of water),
+     * the search is terminated early, and the bottom is assumed to be at the
+     * lowest {@link Block} of {@link Material#WATER}.
      * 
      * @param block The {@link Block} to check.
      * @return {@code true} if more {@link Block}s below this one need to be
@@ -111,6 +116,10 @@ public final class SaferWaterListener implements Listener {
      *         {@link Block}.
      */
     private boolean checkBlock(@NotNull final Block block) {
+        
+        if (block.getType() == Material.AIR) {
+            return false;
+        }
         
         if (this.checkWater(block.getType(), block.getBlockData())) {
             return true;
