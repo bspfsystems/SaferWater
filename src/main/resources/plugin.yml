@@ -1,0 +1,20 @@
+name: SaferWater
+main: org.bspfsystems.saferwater.bukkit.SaferWaterPlugin
+author: mciolkosz
+website: https://github.com/bspfsystems/SaferWater/
+version: 0.0.1
+
+commands:
+  saferwater:
+    description: Base command for all SaferWater subcommands
+    permission: saferwater.command.saferwater
+    permission-message: "§r§cYou do not have permission to execute this command.§r"
+    usage: "§r§cUnknown command. Use§r §b/saferwater <subcommand>§r"
+
+permissions:
+  saferwater.command.saferwater:
+    description: Ability to use the base /saferwater command.
+    default: op
+  saferwater.command.saferwater.reload:
+    description: Ability to use the /saferwater reload command.
+    default: op

@@ -1,0 +1,37 @@
+################################################################################
+################################################################################
+##                                                                            ##
+##                    SaferWater Configuration for Bukkit                     ##
+##                                                                            ##
+## SOURCE CODE: https://github.com/bspfsystems/SaferWater/                    ##
+## BUGS / ISSUES: https://github.com/bspfsystems/SaferWater/issues/           ##
+##                                                                            ##
+## New configuration items will not be added to this file automatically. You  ##
+## can obtain an update version of the default config.yml file from           ##
+## https://bspfsystems.org/config-files/saferwater/bukkit/                    ##
+##                                                                            ##
+## This file may also be called "saferwater.yml". If both "saferwater.yml"    ##
+## and "config.yml" are present in this plugin's configuration directory, the ##
+## "saferwater.yml" file will be preferred over the "config.yml" file.        ##
+##                                                                            ##
+################################################################################
+################################################################################
+
+# The blacklist of mobs that will not be allowed to spawn in water.
+#
+# - This should be a list of mobs (see the example below) that should not be
+#   allowed to spawn in the water. This will include transformations (Zombie to
+#   a Drowned, if Drowned are on the list).
+# - The idea is to prevent the blacklisted mobs from spawning where the light
+#   level on the floor of the body of water is sufficient enough to prevent mobs
+#   from spawning at that level. Thus, other mobs will continue to spawn as if
+#   no mechanics were changed (preventing Drowned but not Guardians for a farm).
+# - If this list is null or empty, no changes will be made to the spawning
+#   mechanics.
+#   
+# - Example configuration:
+#   
+#   disallowed_mobs:
+#     - "Drowned"
+#     - "Guardian"
+disallowed_mobs:
