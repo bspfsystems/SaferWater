@@ -30,9 +30,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bspfsystems.saferwater.bukkit.command.SaferWaterTabExecutor;
 import org.bspfsystems.saferwater.bukkit.listener.SaferWaterListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -93,7 +95,34 @@ public final class SaferWaterPlugin extends JavaPlugin {
         
         this.getServer().getPluginManager().registerEvents(new SaferWaterListener(this), this);
         
+        final TabExecutor saferWaterTabExecutor = new SaferWaterTabExecutor(this);
+        this.registerCommand("saferwater", saferWaterTabExecutor);
+        
         this.reloadConfig(this.getServer().getConsoleSender(), false);
+    }
+    
+    /**
+     * Registers the {@link PluginCommand} with the given name to the given
+     * {@link TabExecutor}.
+     * <p>
+     * If no {@link PluginCommand} is found, an error will be logged an a
+     * {@link RuntimeException} will be thrown.
+     * 
+     * @param commandName The name of the {@link PluginCommand} to retrieve.
+     * @param tabExecutor The {@link TabExecutor} to register to the
+     *                    {@link PluginCommand}.
+     * @throws RuntimeException If no {@link PluginCommand} with the given name
+     *                          can be found.
+     */
+    private void registerCommand(@NotNull final String commandName, @NotNull final TabExecutor tabExecutor) throws RuntimeException {
+        final PluginCommand command = this.getCommand(commandName);
+        if (command == null) {
+            this.logger.log(Level.SEVERE, "Cannot find the /" + commandName + " command.");
+            this.logger.log(Level.SEVERE, "SaferWater will not deny any water spawns.");
+            throw new RuntimeException("Cannot find the /" + commandName + " command.");
+        }
+        command.setExecutor(tabExecutor);
+        command.setTabCompleter(tabExecutor);
     }
     
     /**
@@ -105,7 +134,12 @@ public final class SaferWaterPlugin extends JavaPlugin {
      *         under certain conditions, {@code false} otherwise.
      */
     public boolean isWaterSpawnDisabled(@NotNull final Creature creature) {
-        return this.waterSpawnDisabled.contains(creature.getClass());
+        for (final Class<? extends Creature> clazz : this.waterSpawnDisabled) {
+            if (clazz.isInstance(creature)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -119,13 +153,14 @@ public final class SaferWaterPlugin extends JavaPlugin {
      * @return The tab-completions to remove.
      */
     @NotNull
-    public Collection<String> playerCommandSend(@NotNull final Player player) {
+    public Collection<String> onPlayerCommandSend(@NotNull final Player player) {
         
-        final HashSet<String> removals = new HashSet<String>();
+        final Collection<String> removals = new HashSet<String>();
         for (final String commandName : this.getDescription().getCommands().keySet()) {
             
             removals.add(this.getName().toLowerCase() + ":" + commandName);
-            if (!player.hasPermission(this.getServer().getPluginCommand(commandName).getPermission())) {
+            final PluginCommand command = this.getServer().getPluginCommand(commandName);
+            if (command != null && !command.testPermissionSilent(player)) {
                 removals.add(commandName);
             }
         }
@@ -161,33 +196,57 @@ public final class SaferWaterPlugin extends JavaPlugin {
         final BukkitScheduler scheduler = this.getServer().getScheduler();
         scheduler.runTaskAsynchronously(this, () -> {
             
-            File configFile = new File(this.getDataFolder(), "saferwater.yml");
+            final File configDirectory = this.getDataFolder();
+            try {
+                if (configDirectory.exists()) {
+                    if (!configDirectory.isDirectory()) {
+                        this.logger.log(Level.WARNING, "SaferWater configuration directory is not a directory: " + configDirectory.getPath());
+                        this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
+                        if (command) {
+                            sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
+                        }
+                        return;
+                    }
+                } else if (!configDirectory.mkdirs()) {
+                    this.logger.log(Level.WARNING, "SaferWater configuration directory not created at " + configDirectory.getPath());
+                    this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
+                    if (command) {
+                        sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
+                    }
+                    return;
+                }
+            } catch (SecurityException e) {
+                this.logger.log(Level.WARNING, "Unable to validate the SaferWater configuration directory at " + configDirectory.getPath());
+                this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
+                if (command) {
+                    sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
+                }
+                return;
+            }
+            
+            File configFile = new File(configDirectory, "saferwater.yml");
             try {
                 
                 if (!configFile.exists() || !configFile.isFile()) {
-                    configFile = new File(this.getDataFolder(), "config.yml");
+                    configFile = new File(configDirectory, "config.yml");
                 }
                 
                 if (configFile.exists()) {
                     if (!configFile.isFile()) {
-                        
+                        this.logger.log(Level.WARNING, "SaferWater configuration file is not a file: " + configFile.getPath());
+                        this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
                         if (command) {
                             sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
                         }
-                        
-                        this.logger.log(Level.WARNING, "SaferWater configuration file is not a file: " + configFile.getPath());
-                        this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
                         return;
                     }
                 } else {
                     if (!configFile.createNewFile()) {
-                        
+                        this.logger.log(Level.WARNING, "SaferWater configuration file not created at " + configFile.getPath());
+                        this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
                         if (command) {
                             sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
                         }
-                        
-                        this.logger.log(Level.WARNING, "SaferWater configuration file not created at " + configFile.getPath());
-                        this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
                         return;
                     }
                     
@@ -197,12 +256,11 @@ public final class SaferWaterPlugin extends JavaPlugin {
                     int bytesRead;
                     
                     if (defaultConfig == null) {
+                        this.logger.log(Level.WARNING, "SaferWater default configuration file not found. Possible compilation/build issue with the plugin.");
+                        this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
                         if (command) {
                             sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
                         }
-    
-                        this.logger.log(Level.WARNING, "SaferWater default configuration file not found. Possible compilation/build issue with the plugin.");
-                        this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
                         return;
                     }
                     
@@ -213,24 +271,21 @@ public final class SaferWaterPlugin extends JavaPlugin {
                     outputStream.flush();
                     defaultConfig.close();
                     
+                    this.logger.log(Level.WARNING, "SaferWater configuration file did not exist at " + configFile.getPath());
+                    this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns (other than any defaults in the default configuration file).");
+                    this.logger.log(Level.WARNING, "Please update the configuration as required for your installation, and then run \"/saferwater reload\".");
                     if (command) {
                         sender.sendMessage("§r§cThe SaferWater configuration file did not exist; a copy of the default has been made and placed in the correct location.§r");
                         sender.sendMessage("§r§cPlease update the configuration as required for the installation, and then run§r §b/saferwater reload§r§c.§r");
                     }
-                    
-                    this.logger.log(Level.WARNING, "SaferWater configuration file did not exist at " + configFile.getPath());
-                    this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns (other than any defaults in the default configuration file).");
-                    this.logger.log(Level.WARNING, "Please update the configuration as required for your installation, and then run \"/saferwater reload\".");
                 }
             } catch (SecurityException | IOException e) {
-    
-                if (command) {
-                    sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
-                }
-                
                 this.logger.log(Level.WARNING, "Unable to load the SaferWater configuration file at " + configFile.getPath());
                 this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
                 this.logger.log(Level.WARNING, e.getClass().getSimpleName() + " thrown.", e);
+                if (command) {
+                    sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
+                }
                 return;
             }
             
@@ -238,16 +293,29 @@ public final class SaferWaterPlugin extends JavaPlugin {
             try {
                 config.load(configFile);
             } catch (IOException | InvalidConfigurationException | IllegalArgumentException e) {
-    
-                if (command) {
-                    sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
-                }
-    
                 this.logger.log(Level.WARNING, "Unable to load the SaferWater configuration.");
                 this.logger.log(Level.WARNING, "SaferWater will not deny any water spawns.");
                 this.logger.log(Level.WARNING, e.getClass().getSimpleName() + " thrown.", e);
+                if (command) {
+                    sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
+                }
                 return;
             }
+            
+            final Level loggingLevel;
+            Level rawLoggingLevel;
+            try {
+                rawLoggingLevel = Level.parse(config.getString("logging_level", "INFO"));
+            } catch (NullPointerException | IllegalArgumentException e) {
+                this.logger.log(Level.WARNING, "Unable to load the SaferWater logging level.");
+                this.logger.log(Level.WARNING, "Will use the default level (INFO).");
+                this.logger.log(Level.WARNING, e.getClass().getSimpleName() + " thrown.", e);
+                if (command) {
+                    sender.sendMessage("§r§cAn error has occurred while reloading the SaferWater configuration. Please try again. If the error persists, please report it to a server administrator.§r");
+                }
+                rawLoggingLevel = Level.INFO;
+            }
+            loggingLevel = rawLoggingLevel;
             
             final List<String> disallowedMobsRaw = config.getStringList("disallowed_mobs");
             final List<Class<? extends Creature>> disallowedMobs = new ArrayList<Class<? extends Creature>>();
@@ -255,15 +323,10 @@ public final class SaferWaterPlugin extends JavaPlugin {
                 try {
                     final Class<?> clazz = Class.forName("org.bukkit.entity." + mob);
                     if (!Creature.class.isAssignableFrom(clazz)) {
-                        
                         this.logger.log(Level.WARNING, "Class " + clazz.getName() + " is not of type " + Creature.class.getName() + ", cannot add to denied spawns list.");
                         continue;
                     }
-                    
-                    disallowedMobs.add(Creature.class.cast(clazz).getClass());
-                    
-                    final String nub = "nub";
-                    Class<? extends String> nubby = nub.getClass();
+                    disallowedMobs.add(clazz.asSubclass(Creature.class));
                 } catch (LinkageError | ClassNotFoundException | NullPointerException | ClassCastException e) {
                     this.logger.log(Level.WARNING, "Unable to convert " + mob + " to a Class in org.bukkit.entity.");
                     this.logger.log(Level.WARNING, "Will not use " + mob + " as a disallowed mob.");
@@ -274,6 +337,7 @@ public final class SaferWaterPlugin extends JavaPlugin {
             
             scheduler.runTask(this, () -> {
                 
+                this.logger.setLevel(loggingLevel);
                 this.waterSpawnDisabled.addAll(disallowedMobs);
                 if (command) {
                     sender.sendMessage("§r§aThe SaferWater configuration has been reloaded. Please verify your mob spawns with the configuration file.§r");

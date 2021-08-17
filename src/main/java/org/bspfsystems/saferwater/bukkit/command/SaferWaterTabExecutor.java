@@ -135,9 +135,9 @@ public final class SaferWaterTabExecutor implements TabExecutor {
      */
     private boolean sendSubCommands(@NotNull final CommandSender sender, @NotNull final Command command) {
         
-        final boolean permissionRelog = sender.hasPermission("saferwater.command.saferwater.reload");
+        final boolean permissionReload = sender.hasPermission("saferwater.command.saferwater.reload");
         
-        if (!permissionRelog) {
+        if (!permissionReload) {
             sender.sendMessage(this.getPermissionMessage(command));
             return true;
         }
@@ -145,7 +145,7 @@ public final class SaferWaterTabExecutor implements TabExecutor {
         sender.sendMessage("§r§6Available commands:§r");
         sender.sendMessage("§r§8----------------------------------------------------------------§8");
         
-        if (permissionRelog) {
+        if (permissionReload) {
             sender.sendMessage("§r §f-§r §b/saferwater reload§r");
         }
         

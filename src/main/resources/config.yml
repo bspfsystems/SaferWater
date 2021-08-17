@@ -17,6 +17,14 @@
 ################################################################################
 ################################################################################
 
+# The logging level for the plugin logger.
+#
+# - This will only affect the plugin logger's logging level for this plugin.
+# - NOTE: You will need to update spigot.yml to enable debugging for the debug
+#   messages to display in the log files.
+# - The default is "INFO", but null or empty will be treated as INFO.
+logging_level: "INFO"
+
 # The blacklist of mobs that will not be allowed to spawn in water.
 #
 # - This should be a list of mobs (see the example below) that should not be

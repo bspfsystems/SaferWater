@@ -2,7 +2,8 @@ name: SaferWater
 main: org.bspfsystems.saferwater.bukkit.SaferWaterPlugin
 author: mciolkosz
 website: https://github.com/bspfsystems/SaferWater/
-version: 0.0.1
+version: 1.0.0
+api-version: 1.16
 
 commands:
   saferwater:

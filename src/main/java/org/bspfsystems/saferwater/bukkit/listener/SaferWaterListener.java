@@ -20,6 +20,8 @@
 
 package org.bspfsystems.saferwater.bukkit.listener;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bspfsystems.saferwater.bukkit.SaferWaterPlugin;
 import org.bspfsystems.saferwater.bukkit.command.SaferWaterTabExecutor;
 import org.bukkit.Location;
@@ -66,10 +68,6 @@ public final class SaferWaterListener implements Listener {
     public void onCreatureSpawn(final CreatureSpawnEvent event) {
         
         final LivingEntity livingEntity = event.getEntity();
-        if (!livingEntity.isInWater()) {
-            return;
-        }
-        
         if (!(livingEntity instanceof Creature)) {
             return;
         }
@@ -85,6 +83,11 @@ public final class SaferWaterListener implements Listener {
             return;
         }
         
+        final Block spawnBlock = spawnLocation.getBlock();
+        if (spawnBlock.getType() != Material.WATER && (!(spawnBlock.getBlockData() instanceof Waterlogged) || !((Waterlogged) spawnBlock.getBlockData()).isWaterlogged())) {
+            return;
+        }
+        
         Block lastWaterBlock = spawnWorld.getBlockAt(spawnLocation);
         Block checkBlock = lastWaterBlock.getRelative(BlockFace.DOWN, 1);
         
@@ -95,7 +98,17 @@ public final class SaferWaterListener implements Listener {
             checkBlock = checkBlock.getRelative(BlockFace.DOWN, 1);
         }
         
-        if (lastWaterBlock.getLightLevel() < (byte) 8) {
+        if (lastWaterBlock.getLightLevel() > (byte) 7) {
+            final Logger logger = this.saferWaterPlugin.getLogger();
+            logger.log(Level.CONFIG, "Prevented mob spawn.");
+            logger.log(Level.CONFIG, "Mob Type: " + creature.getClass().getSimpleName());
+            logger.log(Level.CONFIG, "Mob X: " + spawnLocation.getBlockX());
+            logger.log(Level.CONFIG, "Mob Y: " + spawnLocation.getBlockY());
+            logger.log(Level.CONFIG, "Mob Z: " + spawnLocation.getBlockZ());
+            logger.log(Level.CONFIG, "Block Light Level: " + lastWaterBlock.getLightLevel());
+            logger.log(Level.CONFIG, "Block X: " + lastWaterBlock.getX());
+            logger.log(Level.CONFIG, "Block Y: " + lastWaterBlock.getY());
+            logger.log(Level.CONFIG, "Block Z: " + lastWaterBlock.getZ());
             event.setCancelled(true);
         }
     }
@@ -179,6 +192,6 @@ public final class SaferWaterListener implements Listener {
      */
     @EventHandler
     public void onPlayerCommandSend(final PlayerCommandSendEvent event) {
-        event.getCommands().removeAll(this.saferWaterPlugin.playerCommandSend(event.getPlayer()));
+        event.getCommands().removeAll(this.saferWaterPlugin.onPlayerCommandSend(event.getPlayer()));
     }
 }
