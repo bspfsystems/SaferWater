@@ -6,7 +6,7 @@ A plugin for Minecraft Bukkit servers that makes the underwater world a bit safe
 
 You can download the latest version of the plugin from [here](https://github.com/bspfsystems/SaferWater/releases/latest/).
 
-The latest release is 1.0.1.
+The latest release is 1.0.2.
 
 ## Build from Source
 
@@ -34,8 +34,7 @@ The `.jar` file will be located in the `target/` folder for the Bukkit plugin.
 Simply drop the appropriate file into the `plugins/` folder for your Bukkit installation, and then (re-)start the server.
 
 The currently-supported versions of Bukkit are:
-- 1.16.4
-- 1.16.5
+- 1.18.1
 
 _Please Note: This plugin may work with other versions of Bukkit, but is not guaranteed to._
 

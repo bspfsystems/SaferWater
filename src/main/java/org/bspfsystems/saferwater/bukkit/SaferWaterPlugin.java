@@ -2,7 +2,7 @@
  * This file is part of the SaferWater plugin for
  * Bukkit servers for Minecraft.
  *
- * Copyright (C) 2021 BSPF Systems, LLC (https://bspfsystems.org/)
+ * Copyright (C) 2021-2022 BSPF Systems, LLC (https://bspfsystems.org/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ public final class SaferWaterPlugin extends JavaPlugin {
         this.logger.log(Level.INFO, "///////////////////////////////////////////////////////////////////////////");
         this.logger.log(Level.INFO, "//                                                                       //");
         this.logger.log(Level.INFO, "// SaferWater plugin for Bukkit servers for Minecraft.                   //");
-        this.logger.log(Level.INFO, "// Copyright (C) 2021 BSPF Systems, LLC (https://bspfsystems.org/)       //");
+        this.logger.log(Level.INFO, "// Copyright (C) 2021-2022 BSPF Systems, LLC (https://bspfsystems.org/)  //");
         this.logger.log(Level.INFO, "//                                                                       //");
         this.logger.log(Level.INFO, "// This program is free software: you can redistribute it and/or modify  //");
         this.logger.log(Level.INFO, "// it under the terms of the GNU General Public License as published by  //");

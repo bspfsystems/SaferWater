@@ -2,7 +2,7 @@
  * This file is part of the SaferWater plugin for
  * Bukkit servers for Minecraft.
  *
- * Copyright (C) 2021 BSPF Systems, LLC (https://bspfsystems.org/)
+ * Copyright (C) 2021-2022 BSPF Systems, LLC (https://bspfsystems.org/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ public final class SaferWaterListener implements Listener {
             checkBlock = checkBlock.getRelative(BlockFace.DOWN, 1);
         }
         
-        if (lastWaterBlock.getLightLevel() > (byte) 7) {
+        if (lastWaterBlock.getLightLevel() > (byte) 0) {
             final Logger logger = this.saferWaterPlugin.getLogger();
             logger.log(Level.CONFIG, "Prevented mob spawn.");
             logger.log(Level.CONFIG, "Mob Type: " + creature.getClass().getSimpleName());
