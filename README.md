@@ -14,7 +14,7 @@ SaferWater uses [Apache Maven](https://maven.apache.org/) to build and handle de
 
 #### Requirements
 
-- Java Development Kit (JDK) 8 or higher
+- Java Development Kit (JDK) 17 or higher
 - Git
 - Apache Maven
 
