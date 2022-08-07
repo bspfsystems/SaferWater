@@ -11,14 +11,7 @@ _Please Note: This plugin may work with other versions of Bukkit, but is not gua
 
 ## Configuration
 
-A default configuration file (`config.yml`) will be created in the plugin's data folder when you start the server for the first time after installing the plugin. You can then edit the configuration file as needed, and then run the reload command to reload the configuration file:
-- `/saferwater reload`
-
-When new releases of the plugin are made available, the default configuration file may update; however, the configuration file in the plugin's data folder will not be updated. While we try not to change the configuration file, sometimes it is unavoidable. You may obtain an up-to-date version of the default file from [here](https://bspfsystems.org/config-files/saferwater/bukkit/). You can simply drop the updated file in place of the old one, updating the values to reflect your requirements and/or previous settings. You can then run the reload command in-game to load the updated configuration.
-
-The SaferWater plugin can accept alternative names for its configuration file, if the default `config.yml` is confusing to keep track of (configuration files will be in the plugin's data folder). The plugin will also accept `saferwater.yml` as a configuration file name.
-
-Information on the various configuration options can be found within the configuration file [here](https://bspfsystems.org/config-files/saferwater/bukkit/).
+Please see [CONFIGURATION.md](CONFIGURATION.md) for information on configuring the plugin.
 
 ## In-Game Usage / Commands & Permissions
 

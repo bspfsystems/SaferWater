@@ -1,6 +1,6 @@
 # Contributions, Support, and Issues for SaferWater
 
-Contributions to the project are welcome. SaferWater is a free and open source software project, created with the hopes that the community would find ways to improve it.
+Contributions to the project are welcome. SaferWater is a free and open source software project, made open source with the hopes that the community would find ways to improve it.
 
 ## Contributing
 
@@ -40,7 +40,7 @@ If no one has reported the issue previously, or the solution is not apparent, pl
 - The Bukkit implementation you are using (CraftBukkit / Spigot / Paper / etc.)
 - Logs and/or stack traces
 - Any steps to reproducing the issue
-- Anything else that might be helpful in solving your issue.
+- Anything else that might be helpful in solving your issue
 
 _Note:_ Please redact any Personally-Identifiable Information (PII) when you create your issue. These may appear in logs or stack traces. Examples include (but are not limited to):
 - Real names of players / server administrators
@@ -52,9 +52,9 @@ If you are not sure, you can always redact or otherwise change the data.
 
 ### Non-Acceptable Issues
 
-Issues such as "I need help" or "It doesn't work" will not be addressed and/or will be closed with no assistance given. These type of issues do not have any meaningful details to properly address the problem. Other issues that will not be addressed and/or closed without help include (but are not limited to):
-- How to install SaferWater (explained in README)
-- How to configure SaferWater (explained in README and default configuration)
+Issues such as "I need help" or "It doesn't work" will not be addressed and/or will be closed with no assistance given. These types of issues do not have any meaningful details to properly address the problem. Other issues that will not be addressed and/or will be closed without help include (but are not limited to):
+- How to install SaferWater (explained in [USAGE.md](USAGE.md))
+- How to configure SaferWater (explained in [CONFIGURATION.md](CONFIGURATION.md) )
 - How to create plugins
 - How to set up a development environment
 - How to install plugins

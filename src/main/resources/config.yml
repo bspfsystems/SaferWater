@@ -14,32 +14,26 @@
 ## and "config.yml" are present in this plugin's configuration directory, the ##
 ## "saferwater.yml" file will be preferred over the "config.yml" file.        ##
 ##                                                                            ##
+## For more information on configuring SaferWater, including each individual  ##
+## configuration option in this file, please see the configuration            ##
+## documentation at https://bspfsystems.org/config-docs/saferwater/           ##
+##                                                                            ##
 ################################################################################
+################################################################################
+
+################################################################################
+#                           General Plugin Settings                            #
 ################################################################################
 
 # The logging level for the plugin logger.
-#
-# - This will only affect the plugin logger's logging level for this plugin.
-# - NOTE: You will need to update spigot.yml to enable debugging for the debug
-#   messages to display in the log files.
-# - The default is "INFO", but null or empty will be treated as INFO.
+# The default value is "INFO".
 logging_level: "INFO"
 
 # The blacklist of mobs that will not be allowed to spawn in water.
-#
-# - This should be a list of mobs (see the example below) that should not be
-#   allowed to spawn in the water. This will include transformations (Zombie to
-#   a Drowned, if Drowned are on the list).
-# - The idea is to prevent the blacklisted mobs from spawning where the light
-#   level on the floor of the body of water is sufficient enough to prevent mobs
-#   from spawning at that level. Thus, other mobs will continue to spawn as if
-#   no mechanics were changed (preventing Drowned but not Guardians for a farm).
-# - If this list is null or empty, no changes will be made to the spawning
-#   mechanics.
-#   
-# - Example configuration:
-#   
-#   disallowed_mobs:
-#     - "Drowned"
-#     - "Guardian"
+# By default, no mobs are restricted from spawning.
+# Example configuration:
+# 
+# disallowed_mobs:
+#   - "Drowned"
+#   - "Guardian"
 disallowed_mobs:
