@@ -77,6 +77,10 @@ public final class SaferWaterListener implements Listener {
             return;
         }
         
+        if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.DROWNED) {
+            return;
+        }
+        
         final Location spawnLocation = creature.getLocation();
         final World spawnWorld = spawnLocation.getWorld();
         if (spawnWorld == null) {

@@ -5,7 +5,7 @@
 To obtain a copy of SaferWater, please see the related section in [README.md](README.md). Simply drop the `.jar` file into the `plugins/` folder for your Bukkit installation, and then (re-)start the server.
 
 The currently-supported versions of Bukkit are:
-- 1.18.2
+- 1.20.1
 
 _Please Note: This plugin may work with other versions of Bukkit, but is not guaranteed to._
 
