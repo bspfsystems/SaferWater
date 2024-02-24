@@ -5,7 +5,7 @@ A plugin for Minecraft Bukkit servers that makes the underwater world a bit safe
 ## Obtaining SaferWater
 
 You can obtain a copy of SaferWater via the following methods:
-- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/SaferWater/releases/latest/). The latest version is release 1.0.4.
+- Download a pre-built copy from the [Releases page](https://github.com/bspfsystems/SaferWater/releases/latest/). The latest version is release 1.0.5.
 - Build from source (see below).
 
 ### Build from Source
